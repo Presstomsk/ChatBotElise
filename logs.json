@@ -1,4 +1,39 @@
-<?xml version="1.0" encoding="windows-1251" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
-</log>
+<record>
+  <date>2023-02-25T09:57:22.836470500Z</date>
+  <millis>1677319042836</millis>
+  <nanos>470500</nanos>
+  <sequence>0</sequence>
+  <logger>com.example.ChatBotElise.service.TelegramBot</logger>
+  <level>INFO</level>
+  <class>com.example.ChatBotElise.service.TelegramBot</class>
+  <method>onUpdateReceived</method>
+  <thread>19</thread>
+  <message>Pressed start by Светлана</message>
+</record>
+<record>
+  <date>2023-02-25T09:57:25.005113500Z</date>
+  <millis>1677319045005</millis>
+  <nanos>113500</nanos>
+  <sequence>1</sequence>
+  <logger>com.example.ChatBotElise.service.TelegramBot</logger>
+  <level>INFO</level>
+  <class>com.example.ChatBotElise.service.TelegramBot</class>
+  <method>onUpdateReceived</method>
+  <thread>19</thread>
+  <message>Pressed help by Светлана</message>
+</record>
+<record>
+  <date>2023-02-25T09:57:28.204663400Z</date>
+  <millis>1677319048204</millis>
+  <nanos>663400</nanos>
+  <sequence>2</sequence>
+  <logger>com.example.ChatBotElise.service.TelegramBot</logger>
+  <level>INFO</level>
+  <class>com.example.ChatBotElise.service.TelegramBot</class>
+  <method>onUpdateReceived</method>
+  <thread>19</thread>
+  <message>Pressed help by Светлана</message>
+</record>
