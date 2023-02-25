@@ -2,7 +2,10 @@ package com.example.ChatBotElise.service;
 
 import com.example.ChatBotElise.config.BotConfig;
 
-
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -15,10 +18,19 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class TelegramBot extends TelegramLongPollingBot{
 
     final BotConfig config;
-    
+    private static Logger logger = Logger.getLogger(TelegramBot.class.getName());
+    private static FileHandler handler; 
 
     public TelegramBot(BotConfig config) {
         this.config = config;
+        try {
+			this.handler = new FileHandler("logs.json");
+			logger.addHandler(handler);		
+		} catch (SecurityException e) {				
+			logger.log(Level.SEVERE,e.getMessage());
+		} catch (IOException e) {				
+			logger.log(Level.SEVERE,e.getMessage());
+		}
     }
 
     @Override
@@ -36,13 +48,12 @@ public class TelegramBot extends TelegramLongPollingBot{
 
         if(update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
-            long chatId = update.getMessage().getChatId();
-
+            long chatId = update.getMessage().getChatId();         
 
             switch (messageText) {
                 case "/start":
-
-                        startCommandReceived(chatId, update.getMessage().getChat().getFirstName());				
+                        startCommandReceived(chatId, update.getMessage().getChat().getFirstName());	
+                        logger.info("Pressed start by " + update.getMessage().getChat().getFirstName());
                         break;
                 default:
 
@@ -73,7 +84,7 @@ public class TelegramBot extends TelegramLongPollingBot{
             execute(message);
         }
         catch (TelegramApiException e) {       	
-            
+        	logger.log(Level.SEVERE,e.getMessage());
         }
     }
 }
