@@ -88,7 +88,12 @@ public class TelegramBot extends TelegramLongPollingBot{
                     startCommandReceived(chatId, update.getMessage().getChat().getFirstName());	
                     logger.info("Pressed start by " + update.getMessage().getChat().getFirstName());
                     break;
-                
+                case "/mydata":
+                	getUserData(chatId);
+                	break; 
+                case "/deletedata":
+                	deleteUserData(chatId);
+                	break;
                 case "/help":
                 	sendMessage(chatId, HELP_TEXT); 
                 	logger.info("Pressed help by " + update.getMessage().getChat().getFirstName());   
@@ -104,7 +109,42 @@ public class TelegramBot extends TelegramLongPollingBot{
 
     }
 
-    private void registerUser(Message message) {		
+    private void deleteUserData(long chatId) {
+    	if(userRepository.findById(chatId).isPresent()) {
+        	
+    		User user = userRepository.findById(chatId).get();
+    		userRepository.delete(user);
+    		sendMessage(chatId, "Information about your account deleted from database!");
+    		
+    		logger.info("Delete user information: " + user);
+    	}	
+    	else {
+    		sendMessage(chatId, "Database hasn't information about your account!");
+    	}
+	}
+
+	private void getUserData(long chatId) {
+    	if(userRepository.findById(chatId).isPresent()) {
+    	
+    		User user = userRepository.findById(chatId).get();
+    		
+    		String answer = "Information about me:\n\n" +
+                    "ChatId: " + user.getChatId() + "\n\n" +                                             
+                    "First Name: " + user.getFirstName() + "\n\n" +  
+    		        "Last Name: " + user.getLastName() + "\n\n" + 
+    		        "User Name: " + user.getUserName() + "\n\n" +
+    		        "Registered At: " + user.getRegisteredAt() + "\n\n";
+
+    		sendMessage(chatId, answer);
+    		
+    		logger.info("Get user information: " + user);
+    	}
+    	else {
+    		sendMessage(chatId, "Database hasn't information about your account!");
+    	}
+	}
+
+	private void registerUser(Message message) {		
 		
     	if(userRepository.findById(message.getChatId()).isEmpty()) {
     		
