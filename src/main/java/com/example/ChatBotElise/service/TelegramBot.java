@@ -3,6 +3,7 @@ package com.example.ChatBotElise.service;
 import com.example.ChatBotElise.config.BotConfig;
 import com.example.ChatBotElise.model.User;
 import com.example.ChatBotElise.model.UserRepository;
+import com.vdurmont.emoji.EmojiParser;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -167,10 +168,7 @@ public class TelegramBot extends TelegramLongPollingBot{
 
 	private void startCommandReceived(long chatId, String name){
 
-
-        String answer = "Hi, " + name +", nice to meet you!";
-
-
+        String answer = EmojiParser.parseToUnicode("Hi, " + name +", nice to meet you!" + " :blush:");
         sendMessage(chatId, answer);
     }
 

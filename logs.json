@@ -2,9 +2,9 @@
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
 <record>
-  <date>2023-02-26T07:28:37.670282400Z</date>
-  <millis>1677396517670</millis>
-  <nanos>282400</nanos>
+  <date>2023-02-27T12:14:15.877351500Z</date>
+  <millis>1677500055877</millis>
+  <nanos>351500</nanos>
   <sequence>0</sequence>
   <logger>com.example.ChatBotElise.service.TelegramBot</logger>
   <level>INFO</level>
@@ -12,88 +12,4 @@
   <method>onUpdateReceived</method>
   <thread>22</thread>
   <message>Pressed start by Светлана</message>
-</record>
-<record>
-  <date>2023-02-26T07:28:51.716736Z</date>
-  <millis>1677396531716</millis>
-  <nanos>736000</nanos>
-  <sequence>1</sequence>
-  <logger>com.example.ChatBotElise.service.TelegramBot</logger>
-  <level>INFO</level>
-  <class>com.example.ChatBotElise.service.TelegramBot</class>
-  <method>getUserData</method>
-  <thread>22</thread>
-  <message>Get user information: User [chatId=670385295, firstName=Светлана, lastName=Пермякова, userName=null, registeredAt=2023-02-26 14:24:07.376]</message>
-</record>
-<record>
-  <date>2023-02-26T07:28:55.231533900Z</date>
-  <millis>1677396535231</millis>
-  <nanos>533900</nanos>
-  <sequence>2</sequence>
-  <logger>com.example.ChatBotElise.service.TelegramBot</logger>
-  <level>INFO</level>
-  <class>com.example.ChatBotElise.service.TelegramBot</class>
-  <method>onUpdateReceived</method>
-  <thread>22</thread>
-  <message>Pressed help by Светлана</message>
-</record>
-<record>
-  <date>2023-02-26T07:28:57.960592300Z</date>
-  <millis>1677396537960</millis>
-  <nanos>592300</nanos>
-  <sequence>3</sequence>
-  <logger>com.example.ChatBotElise.service.TelegramBot</logger>
-  <level>INFO</level>
-  <class>com.example.ChatBotElise.service.TelegramBot</class>
-  <method>getUserData</method>
-  <thread>22</thread>
-  <message>Get user information: User [chatId=670385295, firstName=Светлана, lastName=Пермякова, userName=null, registeredAt=2023-02-26 14:24:07.376]</message>
-</record>
-<record>
-  <date>2023-02-26T07:29:12.546479700Z</date>
-  <millis>1677396552546</millis>
-  <nanos>479700</nanos>
-  <sequence>4</sequence>
-  <logger>com.example.ChatBotElise.service.TelegramBot</logger>
-  <level>INFO</level>
-  <class>com.example.ChatBotElise.service.TelegramBot</class>
-  <method>deleteUserData</method>
-  <thread>22</thread>
-  <message>Delete user information: User [chatId=670385295, firstName=Светлана, lastName=Пермякова, userName=null, registeredAt=2023-02-26 14:24:07.376]</message>
-</record>
-<record>
-  <date>2023-02-26T07:29:31.710046600Z</date>
-  <millis>1677396571710</millis>
-  <nanos>46600</nanos>
-  <sequence>5</sequence>
-  <logger>com.example.ChatBotElise.service.TelegramBot</logger>
-  <level>INFO</level>
-  <class>com.example.ChatBotElise.service.TelegramBot</class>
-  <method>registerUser</method>
-  <thread>22</thread>
-  <message>User saved: User [chatId=670385295, firstName=Светлана, lastName=Пермякова, userName=null, registeredAt=2023-02-26 14:29:31.668]</message>
-</record>
-<record>
-  <date>2023-02-26T07:29:31.868051Z</date>
-  <millis>1677396571868</millis>
-  <nanos>51000</nanos>
-  <sequence>6</sequence>
-  <logger>com.example.ChatBotElise.service.TelegramBot</logger>
-  <level>INFO</level>
-  <class>com.example.ChatBotElise.service.TelegramBot</class>
-  <method>onUpdateReceived</method>
-  <thread>22</thread>
-  <message>Pressed start by Светлана</message>
-</record>
-<record>
-  <date>2023-02-26T07:29:42.747457Z</date>
-  <millis>1677396582747</millis>
-  <nanos>457000</nanos>
-  <sequence>7</sequence>
-  <logger>com.example.ChatBotElise.service.TelegramBot</logger>
-  <level>INFO</level>
-  <class>com.example.ChatBotElise.service.TelegramBot</class>
-  <method>getUserData</method>
-  <thread>22</thread>
-  <message>Get user information: User [chatId=670385295, firstName=Светлана, lastName=Пермякова, userName=null, registeredAt=2023-02-26 14:29:31.668]</message>
 </record>
