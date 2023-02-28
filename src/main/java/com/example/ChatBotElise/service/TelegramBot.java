@@ -23,6 +23,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
@@ -89,15 +91,33 @@ public class TelegramBot extends TelegramLongPollingBot{
                     startCommandReceived(chatId, update.getMessage().getChat().getFirstName());	
                     logger.info("Pressed start by " + update.getMessage().getChat().getFirstName());
                     break;
+                case "start":
+                	registerUser(update.getMessage());
+                    startCommandReceived(chatId, update.getMessage().getChat().getFirstName());	
+                    logger.info("Pressed start by " + update.getMessage().getChat().getFirstName());
+                    break;
                 case "/mydata":
+                	getUserData(chatId);
+                	break; 
+                case "get my data":
                 	getUserData(chatId);
                 	break; 
                 case "/deletedata":
                 	deleteUserData(chatId);
                 	break;
+                case "delete my data":
+                	deleteUserData(chatId);
+                	break;
                 case "/help":
                 	sendMessage(chatId, HELP_TEXT); 
                 	logger.info("Pressed help by " + update.getMessage().getChat().getFirstName());   
+                	break;
+                case "help":
+                	sendMessage(chatId, HELP_TEXT); 
+                	logger.info("Pressed help by " + update.getMessage().getChat().getFirstName());   
+                	break;
+                case "settings":
+                	sendMessage(chatId, "Sorry, command was not recognized");  
                 	break;
                 default:
 
@@ -176,6 +196,19 @@ public class TelegramBot extends TelegramLongPollingBot{
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText(textToSend);
+        
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+        row.add("start");
+        row.add("get my data");    
+        row.add("delete my data");   
+        row.add("help");
+        row.add("settings");
+        keyboardRows.add(row);
+        keyboardMarkup.setKeyboard(keyboardRows);
+        message.setReplyMarkup(keyboardMarkup);
 
         try{
             execute(message);
