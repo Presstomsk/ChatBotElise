@@ -90,7 +90,7 @@ public class TelegramBot extends TelegramLongPollingBot{
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
             
-            if (messageText.contains("/send")) {
+            if (messageText.contains("/send") && config.getOwnerId() == chatId) {
             	logger.info("Pressed send by " + update.getMessage().getChat().getFirstName());
             	var textToSend = EmojiParser.parseToUnicode(messageText.substring(messageText.indexOf(" ")));
             	var users = userRepository.findAll();
@@ -225,8 +225,7 @@ public class TelegramBot extends TelegramLongPollingBot{
 
 	private void registerUser(Message message) {		
 		
-		Long chatId = message.getChatId();
-		Chat chat = message.getChat();		
+		Long chatId = message.getChatId();			
     	if(userRepository.findById(message.getChatId()).isEmpty()) {   		
     		SendMessage msg = new SendMessage();
             msg.setChatId(String.valueOf(chatId));
