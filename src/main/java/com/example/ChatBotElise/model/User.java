@@ -43,7 +43,7 @@ public class User {
 	public void setRegisteredAt(Timestamp registeredAt) {
 		this.registeredAt = registeredAt;
 	}
-	@Id
+	@Id	
 	private Long chatId;	
 	private String firstName;
 	private String lastName;

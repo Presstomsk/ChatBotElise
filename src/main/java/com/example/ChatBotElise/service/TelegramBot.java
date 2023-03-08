@@ -1,6 +1,8 @@
 package com.example.ChatBotElise.service;
 
 import com.example.ChatBotElise.config.BotConfig;
+import com.example.ChatBotElise.model.Ads;
+import com.example.ChatBotElise.model.AdsRepository;
 import com.example.ChatBotElise.model.User;
 import com.example.ChatBotElise.model.UserRepository;
 import com.vdurmont.emoji.EmojiParser;
@@ -14,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -46,6 +49,8 @@ public class TelegramBot extends TelegramLongPollingBot{
 	
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AdsRepository adsRepository;
     final BotConfig config;    
     private static Logger logger = Logger.getLogger(TelegramBot.class.getName());
     private static FileHandler handler; 
@@ -277,5 +282,16 @@ public class TelegramBot extends TelegramLongPollingBot{
     
     private String getText(String str){
     	return "Pressed " + str + " by ";
+    }
+    
+    @Scheduled(cron = "${cron.scheduler}")
+    private void sendAds(){
+    	var ads = adsRepository.findAll();
+    	var users = userRepository.findAll();
+    	for(Ads ad : ads){
+    		for(User user : users) {
+        		sendMessage(user.getChatId(), ad.getAd()); 
+        	}
+    	}
     }
 }
