@@ -90,6 +90,15 @@ public class TelegramBot extends TelegramLongPollingBot{
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
             
+            if (messageText.contains("/send")) {
+            	logger.info("Pressed send by " + update.getMessage().getChat().getFirstName());
+            	var textToSend = EmojiParser.parseToUnicode(messageText.substring(messageText.indexOf(" ")));
+            	var users = userRepository.findAll();
+            	for(User user : users) {
+            		sendMessage(user.getChatId(), textToSend); 
+            	}
+            }
+            
             switch (messageText) {
                 case "/start":
                 	logger.info("Pressed start by " + update.getMessage().getChat().getFirstName());
@@ -107,8 +116,7 @@ public class TelegramBot extends TelegramLongPollingBot{
                 case "/help":
                 	logger.info("Pressed help by " + update.getMessage().getChat().getFirstName());
                 	sendMessage(chatId, HELP_TEXT);                 	   
-                	break;
-                	
+                	break;               
                 //Обработка команд кнопок экранной клавиатуры 	
                 //case "start":
                 	//registerUser(update.getMessage());
