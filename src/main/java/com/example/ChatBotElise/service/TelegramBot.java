@@ -18,13 +18,16 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+//import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+//import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
@@ -36,6 +39,8 @@ public class TelegramBot extends TelegramLongPollingBot{
                                              "Type /start to see a welcome message\n\n" +
                                              "Type /mydata to see data stored about yourself\n\n" +
                                              "Type /help to see this message again";
+    private static final String YES = "YES_REGISTRATION";
+    private static final String NO = "NO_REGISTRATION";
 	
     @Autowired
     private UserRepository userRepository;
@@ -46,7 +51,7 @@ public class TelegramBot extends TelegramLongPollingBot{
     public TelegramBot(BotConfig config) {
         this.config = config;       
         try {
-			this.handler = new FileHandler("logs.json");
+			TelegramBot.handler = new FileHandler("logs.json");
 			logger.addHandler(handler);		
 		} catch (SecurityException e) {				
 			logger.log(Level.SEVERE,e.getMessage());
@@ -79,55 +84,100 @@ public class TelegramBot extends TelegramLongPollingBot{
     }
 
     @Override
-    public void onUpdateReceived(Update update) {
-
+    public void onUpdateReceived(Update update) {    	
+    	
         if(update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
-            long chatId = update.getMessage().getChatId();         
-
+            long chatId = update.getMessage().getChatId();
+            
             switch (messageText) {
                 case "/start":
-                	registerUser(update.getMessage());
-                    startCommandReceived(chatId, update.getMessage().getChat().getFirstName());	
-                    logger.info("Pressed start by " + update.getMessage().getChat().getFirstName());
-                    break;
-                case "start":
-                	registerUser(update.getMessage());
-                    startCommandReceived(chatId, update.getMessage().getChat().getFirstName());	
-                    logger.info("Pressed start by " + update.getMessage().getChat().getFirstName());
-                    break;
+                	logger.info("Pressed start by " + update.getMessage().getChat().getFirstName());
+                	startCommandReceived(chatId, update.getMessage().getChat().getFirstName());	
+                	registerUser(update.getMessage());               
+                    break;                
                 case "/mydata":
-                	getUserData(chatId);
-                	break; 
-                case "get my data":
-                	getUserData(chatId);
-                	break; 
+                	logger.info("Pressed mydata by " + update.getMessage().getChat().getFirstName());
+                	getUserData(chatId);                	
+                	break;                
                 case "/deletedata":
-                	deleteUserData(chatId);
-                	break;
-                case "delete my data":
-                	deleteUserData(chatId);
-                	break;
+                	logger.info("Pressed deletedata by " + update.getMessage().getChat().getFirstName());
+                	deleteUserData(chatId);                	
+                	break;                
                 case "/help":
-                	sendMessage(chatId, HELP_TEXT); 
-                	logger.info("Pressed help by " + update.getMessage().getChat().getFirstName());   
+                	logger.info("Pressed help by " + update.getMessage().getChat().getFirstName());
+                	sendMessage(chatId, HELP_TEXT);                 	   
                 	break;
-                case "help":
-                	sendMessage(chatId, HELP_TEXT); 
-                	logger.info("Pressed help by " + update.getMessage().getChat().getFirstName());   
-                	break;
-                case "settings":
-                	sendMessage(chatId, "Sorry, command was not recognized");  
-                	break;
+                	
+                //Обработка команд кнопок экранной клавиатуры 	
+                //case "start":
+                	//registerUser(update.getMessage());
+                    //startCommandReceived(chatId, update.getMessage().getChat().getFirstName());	
+                    //logger.info("Pressed start by " + update.getMessage().getChat().getFirstName());
+                    //break;
+                //case "get my data":
+                	//getUserData(chatId);
+                	//break; 
+                //case "help":
+                	//sendMessage(chatId, HELP_TEXT); 
+                	//logger.info("Pressed help by " + update.getMessage().getChat().getFirstName());   
+                	//break;
+                //case "delete my data":
+                	//deleteUserData(chatId);
+                	//break;
+                //case "settings":
+                	//sendMessage(chatId, "Sorry, command was not recognized");  
+                	//break;
+                	
                 default:
-
-                    sendMessage(chatId, "Sorry, command was not recognized");
+                	logger.info("Pressed unknown command by " + update.getMessage().getChat().getFirstName());
+                    sendMessage(chatId, "Sorry, command was not recognized");                    
 
             }
         }
-
-
-
+        else if(update.hasCallbackQuery()) {
+        	String callbackData = update.getCallbackQuery().getData();
+        	long chatId = update.getCallbackQuery().getMessage().getChatId();   
+        	Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
+        	Chat chat = update.getCallbackQuery().getMessage().getChat();
+        	
+        	if (callbackData.equals(YES)) {
+        		logger.info("Pressed " + YES); 
+        		
+        		String text = "You are registered!";        		
+        		EditMessageText message = new EditMessageText();
+        		message.setChatId(String.valueOf(chatId));
+        		message.setText(text);
+        		message.setMessageId(messageId);
+        		
+        		try{
+        		    registration(chatId, chat);        		
+                    execute(message);
+                    logger.info("Sended message to user : " + text);
+                }
+                catch (TelegramApiException e) {       	
+                	logger.log(Level.SEVERE,e.getMessage());
+                } 
+        		catch (Exception e) {       	
+                	logger.log(Level.SEVERE,e.getMessage());
+                }	
+        	}
+        	else if (callbackData.equals(NO)) {
+        		logger.info("Pressed " + NO);
+        		String text = "You canceled registration";         		
+        		EditMessageText message = new EditMessageText();
+        		message.setChatId(String.valueOf(chatId));
+        		message.setText(text);
+        		message.setMessageId(messageId);
+        		try{
+                    execute(message);
+                    logger.info("Sended message to user : " + text);
+                }
+                catch (TelegramApiException e) {       	
+                	logger.log(Level.SEVERE,e.getMessage());
+                } 
+        	}
+        }
     }
 
     private void deleteUserData(long chatId) {
@@ -167,24 +217,50 @@ public class TelegramBot extends TelegramLongPollingBot{
 
 	private void registerUser(Message message) {		
 		
-    	if(userRepository.findById(message.getChatId()).isEmpty()) {
+		Long chatId = message.getChatId();
+		Chat chat = message.getChat();		
+    	if(userRepository.findById(message.getChatId()).isEmpty()) {   		
+    		SendMessage msg = new SendMessage();
+            msg.setChatId(String.valueOf(chatId));
+            msg.setText("Do you want to register?");
     		
-    		Long chatId = message.getChatId();
-    		Chat chat = message.getChat();
-    		
-    		User user = new User();
-    		user.setChatId(chatId);
-    		user.setFirstName(chat.getFirstName());
-    		user.setLastName(chat.getLastName());
-    		user.setUserName(chat.getUserName());
-    		user.setRegisteredAt(new Timestamp(System.currentTimeMillis()));
-    		
-    		userRepository.save(user);
-    		
-    		logger.info("User saved: " + user);
-    	}
-    	
+            InlineKeyboardMarkup markup = new InlineKeyboardMarkup(); 
+            List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            var yesButton = new InlineKeyboardButton();
+            yesButton.setText("Yes");
+            yesButton.setCallbackData(YES);
+            var noButton = new InlineKeyboardButton();
+            noButton.setText("No");
+            noButton.setCallbackData(NO);
+            row.add(yesButton);
+            row.add(noButton);
+            rows.add(row);
+            markup.setKeyboard(rows);
+            
+            msg.setReplyMarkup(markup);  
+            
+            try{
+                execute(msg);
+                logger.info("Sended message to user : " + msg.getText());
+            }
+            catch (TelegramApiException e) {       	
+            	logger.log(Level.SEVERE,e.getMessage());
+            }      		
+    	}    	
 	}
+	
+	private void registration(long chatId, Chat chat){	
+		
+		User user = new User();
+		user.setChatId(chatId);
+		user.setFirstName(chat.getFirstName());
+		user.setLastName(chat.getLastName());
+		user.setUserName(chat.getUserName());
+		user.setRegisteredAt(new Timestamp(System.currentTimeMillis()));
+		userRepository.save(user);		
+		logger.info("User saved: " + user);        	
+    }
 
 	private void startCommandReceived(long chatId, String name){
 
@@ -197,21 +273,23 @@ public class TelegramBot extends TelegramLongPollingBot{
         message.setChatId(String.valueOf(chatId));
         message.setText(textToSend);
         
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        // Добавление экранной клавиатуры       
         
-        List<KeyboardRow> keyboardRows = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-        row.add("start");
-        row.add("get my data");    
-        row.add("delete my data");   
-        row.add("help");
-        row.add("settings");
-        keyboardRows.add(row);
-        keyboardMarkup.setKeyboard(keyboardRows);
-        message.setReplyMarkup(keyboardMarkup);
+        //ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();        
+        //List<KeyboardRow> keyboardRows = new ArrayList<>();
+        //KeyboardRow row = new KeyboardRow();
+        //row.add("start");
+        //row.add("get my data");    
+        //row.add("delete my data");   
+        //row.add("help");
+        //row.add("settings");
+        //keyboardRows.add(row);
+        //keyboardMarkup.setKeyboard(keyboardRows);
+        //message.setReplyMarkup(keyboardMarkup);        
 
         try{
             execute(message);
+            logger.info("Sended message to user : " + textToSend);
         }
         catch (TelegramApiException e) {       	
         	logger.log(Level.SEVERE,e.getMessage());
